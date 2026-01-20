@@ -1,143 +1,207 @@
-// /src/app/page.tsx
+// src/app/page.tsx
 "use client";
 
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-// Dati mock per gli immobili (sostituiremo con dati reali da Supabase)
-const mockProperties = [
+// Mock data per le stanze
+const mockRooms = [
   {
     id: 1,
-    title: "Appartamento moderno centro Milano",
-    location: "Milano, Lombardia",
-    price: 350000,
-    bedrooms: 2,
-    bathrooms: 1,
-    sqm: 75,
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+    title: "Soggiorno Scandinavo Luminoso",
+    room_type: "soggiorno",
+    design_style: "scandinavo",
+    sqm: 28,
+    user: {
+      name: "Anna Rossi",
+      avatar: "https://i.pravatar.cc/150?img=1"
+    },
+    image: "https://images.unsplash.com/photo-1600210492493-0946911123ea?w=800&h=600&fit=crop",
+    like_count: 342,
+    save_count: 128,
+    comment_count: 23,
+    tags: ["minimal", "luminoso", "accogliente"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 2,
-    title: "Villa con vista mare",
-    location: "Portofino, Liguria",
-    price: 1200000,
-    bedrooms: 4,
-    bathrooms: 3,
-    sqm: 250,
-    image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop",
+    title: "Camera da Letto Moderna con Vista",
+    room_type: "camera_letto",
+    design_style: "moderno",
+    sqm: 18,
+    user: {
+      name: "Marco Bianchi",
+      avatar: "https://i.pravatar.cc/150?img=2"
+    },
+    image: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&h=600&fit=crop",
+    like_count: 567,
+    save_count: 234,
+    comment_count: 45,
+    tags: ["elegante", "rilassante"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 3,
-    title: "Attico di lusso con terrazzo",
-    location: "Roma, Lazio",
-    price: 850000,
-    bedrooms: 3,
-    bathrooms: 2,
-    sqm: 120,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+    title: "Cucina Industriale Open Space",
+    room_type: "cucina",
+    design_style: "industriale",
+    sqm: 22,
+    user: {
+      name: "Sofia Verde",
+      avatar: "https://i.pravatar.cc/150?img=3"
+    },
+    image: "https://images.unsplash.com/photo-1556912167-f556f1f39faa?w=800&h=600&fit=crop",
+    like_count: 892,
+    save_count: 445,
+    comment_count: 67,
+    tags: ["industrial", "funzionale"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 4,
-    title: "Casa indipendente campagna",
-    location: "Siena, Toscana",
-    price: 450000,
-    bedrooms: 3,
-    bathrooms: 2,
-    sqm: 180,
-    image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&h=600&fit=crop",
+    title: "Bagno Minimal con Vasca",
+    room_type: "bagno",
+    design_style: "minimalista",
+    sqm: 8,
+    user: {
+      name: "Luca Neri",
+      avatar: "https://i.pravatar.cc/150?img=4"
+    },
+    image: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&h=600&fit=crop",
+    like_count: 423,
+    save_count: 189,
+    comment_count: 31,
+    tags: ["spa", "relax"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 5,
-    title: "Loft industriale ristrutturato",
-    location: "Torino, Piemonte",
-    price: 280000,
-    bedrooms: 1,
-    bathrooms: 1,
-    sqm: 90,
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+    title: "Studio Home Office Creativo",
+    room_type: "studio",
+    design_style: "contemporaneo",
+    sqm: 12,
+    user: {
+      name: "Elena Gialli",
+      avatar: "https://i.pravatar.cc/150?img=5"
+    },
+    image: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=800&h=600&fit=crop",
+    like_count: 678,
+    save_count: 312,
+    comment_count: 52,
+    tags: ["produttivo", "creativo"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 6,
-    title: "Appartamento balcone panoramico",
-    location: "Firenze, Toscana",
-    price: 520000,
-    bedrooms: 2,
-    bathrooms: 2,
-    sqm: 95,
-    image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop",
+    title: "Terrazzo Boho con Piante",
+    room_type: "terrazzo",
+    design_style: "boho",
+    sqm: 15,
+    user: {
+      name: "Giulia Marroni",
+      avatar: "https://i.pravatar.cc/150?img=6"
+    },
+    image: "https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=800&h=600&fit=crop",
+    like_count: 1243,
+    save_count: 678,
+    comment_count: 89,
+    tags: ["outdoor", "verde", "relax"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 7,
-    title: "Monolocale zona universitaria",
-    location: "Bologna, Emilia-Romagna",
-    price: 180000,
-    bedrooms: 1,
-    bathrooms: 1,
-    sqm: 45,
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    title: "Cameretta Montessori per Bambini",
+    room_type: "cameretta",
+    design_style: "scandinavo",
+    sqm: 14,
+    user: {
+      name: "Chiara Blu",
+      avatar: "https://i.pravatar.cc/150?img=7"
+    },
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+    like_count: 534,
+    save_count: 267,
+    comment_count: 41,
+    tags: ["kids", "educativo"],
+    is_liked: false,
+    is_saved: false,
   },
   {
     id: 8,
-    title: "Trilocale ristrutturato centro",
-    location: "Verona, Veneto",
-    price: 295000,
-    bedrooms: 2,
-    bathrooms: 1,
-    sqm: 85,
-    image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?w=800&h=600&fit=crop",
-  },
-  {
-    id: 9,
-    title: "Penthouse vista lago",
-    location: "Como, Lombardia",
-    price: 980000,
-    bedrooms: 3,
-    bathrooms: 2,
-    sqm: 140,
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
-  },
-  {
-    id: 10,
-    title: "Bilocale zona residenziale",
-    location: "Padova, Veneto",
-    price: 220000,
-    bedrooms: 1,
-    bathrooms: 1,
-    sqm: 60,
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
-  },
-  {
-    id: 11,
-    title: "Villa singola con giardino",
-    location: "Bergamo, Lombardia",
-    price: 550000,
-    bedrooms: 4,
-    bathrooms: 2,
-    sqm: 200,
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
-  },
-  {
-    id: 12,
-    title: "Mansarda centro storico",
-    location: "Pisa, Toscana",
-    price: 310000,
-    bedrooms: 2,
-    bathrooms: 1,
-    sqm: 70,
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop",
+    title: "Ingresso Elegante con Specchio",
+    room_type: "ingresso",
+    design_style: "classico",
+    sqm: 6,
+    user: {
+      name: "Paolo Grigi",
+      avatar: "https://i.pravatar.cc/150?img=8"
+    },
+    image: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&h=600&fit=crop",
+    like_count: 298,
+    save_count: 134,
+    comment_count: 18,
+    tags: ["elegante", "funzionale"],
+    is_liked: false,
+    is_saved: false,
   },
 ];
 
+const roomTypeLabels: Record<string, string> = {
+  soggiorno: "Soggiorno",
+  camera_letto: "Camera da letto",
+  cucina: "Cucina",
+  bagno: "Bagno",
+  studio: "Studio",
+  cameretta: "Cameretta",
+  terrazzo: "Terrazzo",
+  ingresso: "Ingresso",
+};
+
+const designStyleLabels: Record<string, string> = {
+  scandinavo: "Scandinavo",
+  moderno: "Moderno",
+  industriale: "Industriale",
+  minimalista: "Minimalista",
+  contemporaneo: "Contemporaneo",
+  boho: "Boho",
+  classico: "Classico",
+};
+
 export default function Home() {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("it-IT", {
-      style: "currency",
-      currency: "EUR",
-      maximumFractionDigits: 0,
-    }).format(price);
+  const [rooms, setRooms] = useState(mockRooms);
+
+  const toggleLike = (roomId: number) => {
+    setRooms(rooms.map(room => 
+      room.id === roomId 
+        ? { 
+            ...room, 
+            is_liked: !room.is_liked,
+            like_count: room.is_liked ? room.like_count - 1 : room.like_count + 1
+          }
+        : room
+    ));
+  };
+
+  const toggleSave = (roomId: number) => {
+    setRooms(rooms.map(room => 
+      room.id === roomId 
+        ? { 
+            ...room, 
+            is_saved: !room.is_saved,
+            save_count: room.is_saved ? room.save_count - 1 : room.save_count + 1
+          }
+        : room
+    ));
   };
 
   return (
@@ -148,52 +212,76 @@ export default function Home() {
         {/* Hero Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Trova la tua casa ideale
+            Esplora Stanze e Design
           </h1>
           <p className="text-gray-600">
-            Scopri le migliori opportunità immobiliari in tutta Italia
+            Scopri idee e ispirazioni per ogni ambiente della tua casa
           </p>
         </div>
 
-        {/* Filters - Placeholder for now */}
+        {/* Filters */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
-          <Button variant="outline" size="sm">Tutti</Button>
-          <Button variant="outline" size="sm">Appartamenti</Button>
-          <Button variant="outline" size="sm">Ville</Button>
-          <Button variant="outline" size="sm">Loft</Button>
-          <Button variant="outline" size="sm">Case indipendenti</Button>
+          <Button variant="outline" size="sm">Tutte</Button>
+          <Button variant="outline" size="sm">Soggiorno</Button>
+          <Button variant="outline" size="sm">Camera</Button>
+          <Button variant="outline" size="sm">Cucina</Button>
+          <Button variant="outline" size="sm">Bagno</Button>
+          <Button variant="outline" size="sm">Studio</Button>
         </div>
 
-        {/* Property Grid - 6 colonne */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {mockProperties.map((property) => (
-            <Link href={`/property/${property.id}`} key={property.id}>
-              <Card
-                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group p-0"
-              >
+        {/* Rooms Grid - Layout Pinterest style */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          {rooms.map((room) => (
+            <Card
+              key={room.id}
+              className="overflow-hidden hover:shadow-xl transition-all duration-300 group p-0 flex flex-col"
+            >
               {/* Image */}
-              <div className="relative h-40 w-full overflow-hidden">
+              <Link href={`/room/${room.id}`} className="relative h-64 w-full overflow-hidden block">
                 <Image
-                  src={property.image}
-                  alt={property.title}
+                  src={room.image}
+                  alt={room.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 
-                {/* Heart Button */}
+                {/* Overlay con azioni rapide */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {/* Tags in basso */}
+                  <div className="absolute bottom-3 left-3 right-3 flex gap-2 flex-wrap">
+                    {room.tags.slice(0, 2).map((tag, idx) => (
+                      <span 
+                        key={idx}
+                        className="px-2 py-1 bg-white/90 backdrop-blur-sm text-xs font-medium text-gray-900 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Badge tipo stanza */}
+                <div className="absolute top-3 left-3">
+                  <span className="px-3 py-1 bg-white/95 backdrop-blur-sm text-xs font-semibold text-gray-900 rounded-full shadow-sm">
+                    {roomTypeLabels[room.room_type]}
+                  </span>
+                </div>
+
+                {/* Save button */}
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log("Toggle favorite:", property.id);
-                    // TODO: Implementa logica preferiti
+                    toggleSave(room.id);
                   }}
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center transition-all hover:scale-110 z-10"
-                  aria-label="Aggiungi ai preferiti"
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 backdrop-blur-sm hover:bg-white flex items-center justify-center transition-all hover:scale-110 shadow-sm"
+                  aria-label="Salva"
                 >
                   <svg
-                    className="w-5 h-5 text-gray-700 hover:text-red-500 transition-colors"
-                    fill="none"
+                    className={`w-5 h-5 transition-colors ${
+                      room.is_saved ? "text-primary fill-current" : "text-gray-700"
+                    }`}
+                    fill={room.is_saved ? "currentColor" : "none"}
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -201,22 +289,60 @@ export default function Home() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
                     />
                   </svg>
                 </button>
-              </div>
+              </Link>
 
               {/* Content */}
-              <div className="p-3">
-                <div className="mb-2">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 min-h-[2.5rem]">
-                    {property.title}
+              <div className="p-4 flex-1 flex flex-col">
+                <Link href={`/room/${room.id}`}>
+                  <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-primary transition">
+                    {room.title}
                   </h3>
-                  <p className="text-xs text-gray-500 flex items-center gap-1">
+                </Link>
+
+                {/* Meta info */}
+                <div className="flex items-center gap-2 text-xs text-gray-600 mb-3">
+                  <span className="px-2 py-0.5 bg-gray-100 rounded-full">
+                    {designStyleLabels[room.design_style]}
+                  </span>
+                  <span>•</span>
+                  <span>{room.sqm} m²</span>
+                </div>
+
+                {/* User info */}
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0">
+                    <Image
+                      src={room.user.avatar}
+                      alt={room.user.name}
+                      width={28}
+                      height={28}
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="text-sm text-gray-700 font-medium truncate">
+                    {room.user.name}
+                  </span>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-4 pt-3 border-t border-gray-100 mt-auto">
+                  {/* Like */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleLike(room.id);
+                    }}
+                    className="flex items-center gap-1.5 text-gray-600 hover:text-red-500 transition group/like"
+                  >
                     <svg
-                      className="w-3 h-3"
-                      fill="none"
+                      className={`w-5 h-5 transition-colors ${
+                        room.is_liked ? "text-red-500 fill-current" : ""
+                      }`}
+                      fill={room.is_liked ? "currentColor" : "none"}
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -224,44 +350,50 @@ export default function Home() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                       />
+                    </svg>
+                    <span className="text-sm font-medium">{room.like_count}</span>
+                  </button>
+
+                  {/* Comments */}
+                  <Link 
+                    href={`/room/${room.id}#comments`}
+                    className="flex items-center gap-1.5 text-gray-600 hover:text-primary transition"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                       />
                     </svg>
-                    {property.location}
-                  </p>
-                </div>
+                    <span className="text-sm font-medium">{room.comment_count}</span>
+                  </Link>
 
-                {/* Features */}
-                <div className="flex items-center gap-2 text-xs text-gray-600 mb-2">
-                  <span>{property.bedrooms} cam</span>
-                  <span>•</span>
-                  <span>{property.bathrooms} bagni</span>
-                  <span>•</span>
-                  <span>{property.sqm} m²</span>
-                </div>
-
-                {/* Price */}
-                <div className="pt-2 border-t border-gray-100">
-                  <span className="text-base font-bold text-primary block">
-                    {formatPrice(property.price)}
-                  </span>
+                  {/* Saves count */}
+                  <div className="flex items-center gap-1.5 text-gray-600 ml-auto">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium">{room.save_count}</span>
+                  </div>
                 </div>
               </div>
             </Card>
-            </Link>
           ))}
         </div>
 
         {/* Load More */}
-        <div className="mt-8 text-center">
+        <div className="mt-12 text-center">
           <Button variant="outline" size="lg">
-            Carica altri immobili
+            Carica altre stanze
           </Button>
         </div>
       </main>
